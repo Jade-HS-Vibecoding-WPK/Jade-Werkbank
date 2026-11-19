@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jade Werkbank</title>
+  <meta name="description" content="Die Werkbank am Ende der Vibecoding-Allee: alle Werkzeuge der WPK-Projekte griffbereit, mit einer Ablage zum Zwischenspeichern von Dateien.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='12' width='28' height='6' rx='1' fill='%23b9824c'/%3E%3Crect x='5' y='18' width='3' height='11' fill='%238a5a2e'/%3E%3Crect x='24' y='18' width='3' height='11' fill='%238a5a2e'/%3E%3Crect x='14' y='3' width='4' height='9' rx='1' fill='%23b9824c'/%3E%3Crect x='9' y='3' width='14' height='4' rx='1' fill='%236b757e'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&family=Saira+Stencil+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="werkstatt">
+    <!-- Aufsatz: Schild auf zwei Pfosten, dazwischen die Lochwand -->
+    <div class="aufsatz">
+      <h1 class="schild"><span>Jade Werkbank</span></h1>
+      <div class="lochwand" id="lochwand">
+        <a class="wegweiser" href="https://jade-hs-vibecoding-wpk.github.io/.github/" title="Zurück zur Vibecoding-Allee">
+          <span>Zur Vibecoding-Allee</span>
+        </a>
+        <div class="haken-reihe" id="haken" aria-hidden="true"></div>
+        <div class="notiz-zettel">
+          <b>So geht’s</b>
+          <span>Werkzeug anklicken: Demo, Code und Team.</span>
+          <span>Dateien auf die Ablage ziehen, einfügen (Strg+V) oder auswählen. Sie bleiben hier liegen, bis du sie wegräumst.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arbeitsplatte: links und rechts die Werkzeuge, in der Mitte die Ablage -->
+    <section class="platte" aria-label="Arbeitsplatte">
+      <ul class="werkzeuge links" id="werkzeuge-links" aria-label="Werkzeuge"></ul>
+
+      <section class="ablage" id="ablage" aria-labelledby="ablage-titel">
+        <header class="ablage-kopf">
+          <h2 id="ablage-titel">Ablage</h2>
+          <span class="ablage-zahl" id="ablage-zahl"></span>
+        </header>
+        <ul class="zettel-liste" id="zettel-liste"></ul>
+        <p class="ablage-leer" id="ablage-leer">
+          Hier kannst du Dateien zwischenlagern, zum Beispiel ein Export aus einem Werkzeug, den du im nächsten weiterverwendest.
+          <span>Ziehen, einfügen (Strg+V) oder auswählen.</span>
+        </p>
+        <footer class="ablage-fuss">
+          <label class="knopf haupt">
+            <input type="file" id="datei-wahl" multiple hidden>
+            Datei ablegen
+          </label>
+          <button type="button" class="knopf" id="notiz-neu">Notiz</button>
+          <button type="button" class="knopf leise" id="ablage-leeren" hidden>Leeren</button>
+        </footer>
+        <p class="ablage-hinweis" id="ablage-hinweis">Bleibt nur in diesem Browser auf diesem Gerät.</p>
+        <div class="ablage-drop" aria-hidden="true"><span>Loslassen zum Ablegen</span></div>
+      </section>
+
+      <ul class="werkzeuge rechts" id="werkzeuge-rechts" aria-label="Weitere Werkzeuge"></ul>
+    </section>
+
+    <!-- Zarge mit Vorderzange und Schublade -->
+    <div class="zarge">
+      <div class="zange" aria-hidden="true"><i class="backe"></i><i class="spindel"></i><i class="knebel"></i></div>
+      <button type="button" class="schublade" id="schublade" aria-expanded="false" aria-controls="ueber">
+        <span class="griff"></span>
+        <span class="schublade-text">Über die Werkbank</span>
+      </button>
+      <span class="plakette">Blockwoche 16.–20.11.2026</span>
+    </div>
+    <div class="ueber" id="ueber" hidden>
+      <p><b>Jade Werkbank</b> ist das Ende der <a href="https://jade-hs-vibecoding-wpk.github.io/.github/">Vibecoding-Allee</a>: Jedes Projekt aus dem WPK „Thinking Architecture through Software Design“ liegt hier als Werkzeug, das zu ihm passt. Die Liste kommt live aus der Allee, neue Projekte liegen also von selbst mit auf der Bank.</p>
+      <p>Die <b>Ablage</b> speichert Dateien im Browser (IndexedDB). Nichts wird hochgeladen, und auf einem anderen Gerät ist die Ablage leer.</p>
+      <p>Code: <a href="https://github.com/Jade-HS-Vibecoding-WPK/Jade-Werkbank">Jade-HS-Vibecoding-WPK/Jade-Werkbank</a></p>
+    </div>
+
+    <div class="unterbau" aria-hidden="true">
+      <i class="bein l"></i><i class="bein r"></i>
+      <div class="boden">
+        <i class="brett b1"></i><i class="brett b2"></i><i class="brett b3"></i>
+        <i class="kiste"></i>
+      </div>
+    </div>
+    <p class="fussnote" id="quelle"></p>
+  </main>
+
+  <!-- Werkzeugschein -->
+  <dialog class="schein" id="schein" aria-labelledby="schein-titel">
+    <button type="button" class="schliessen" data-close aria-label="Schließen">×</button>
+    <div class="schein-kopf">
+      <div class="schein-bild" id="schein-werkzeug"></div>
+      <div>
+        <p class="schein-ueber" id="schein-ueber"></p>
+        <h2 id="schein-titel"></h2>
+        <p class="schein-warum" id="schein-warum"></p>
+      </div>
+    </div>
+    <img class="schein-vorschau" id="schein-vorschau" alt="" hidden>
+    <p class="schein-text" id="schein-text"></p>
+    <ul class="schein-team" id="schein-team"></ul>
+    <p class="schein-ohne" id="schein-ohne" hidden>Noch keine Demo. Der Code liegt auf GitHub.</p>
+    <div class="schein-knoepfe">
+      <button type="button" class="knopf haupt" id="schein-probe">An der Werkbank ausprobieren</button>
+      <a class="knopf" id="schein-demo" target="_blank" rel="noopener">Demo in neuem Tab ↗</a>
+      <a class="knopf" id="schein-code" target="_blank" rel="noopener">Code auf GitHub</a>
+      <a class="knopf leise" id="schein-allee">In der Allee zeigen</a>
+    </div>
+  </dialog>
+
+  <!-- Ausprobieren: Demo im Rahmen, Ablage daneben -->
+  <div class="probe" id="probe" hidden>
+    <header class="probe-leiste">
+      <span class="probe-werkzeug" id="probe-werkzeug" aria-hidden="true"></span>
+      <b id="probe-titel"></b>
+      <span class="probe-platz"></span>
+      <button type="button" class="knopf" id="probe-ablage-knopf" aria-pressed="true">Ablage</button>
+      <a class="knopf" id="probe-tab" target="_blank" rel="noopener">Neuer Tab ↗</a>
+      <button type="button" class="knopf haupt" id="probe-zu">Zurück zur Werkbank</button>
+    </header>
+    <div class="probe-koerper">
+      <iframe id="probe-rahmen" title="Demo" allow="fullscreen; clipboard-read; clipboard-write; geolocation; xr-spatial-tracking"></iframe>
+      <aside class="probe-ablage" id="probe-ablage" aria-label="Ablage">
+        <h2>Ablage</h2>
+        <p class="probe-tipp">Zettel ins Werkzeug ziehen oder mit <b>←</b> hineinlegen. Neue Dateien hierher ziehen oder einfügen.</p>
+        <ul class="zettel-liste klein" id="probe-liste"></ul>
+        <label class="knopf">
+          <input type="file" id="probe-wahl" multiple hidden>
+          Datei ablegen
+        </label>
+        <div class="ablage-drop" aria-hidden="true"><span>Loslassen</span></div>
+      </aside>
+    </div>
+  </div>
+
+  <dialog class="notiz" id="notiz" aria-labelledby="notiz-titel">
+    <form method="dialog">
+      <h2 id="notiz-titel">Notiz ablegen</h2>
+      <input type="text" id="notiz-name" placeholder="Name (optional)" maxlength="80">
+      <textarea id="notiz-text" rows="8" placeholder="Text, Link, Maße …"></textarea>
+      <div class="schein-knoepfe">
+        <button class="knopf haupt" value="ok">Ablegen</button>
+        <button class="knopf leise" value="abbrechen" formnovalidate>Abbrechen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
