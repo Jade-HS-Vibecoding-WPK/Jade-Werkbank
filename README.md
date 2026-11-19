@@ -1,44 +1,43 @@
 # Jade Werkbank
 
-Die Werkbank am Ende der [Vibecoding-Allee](https://jade-hs-vibecoding-wpk.github.io/.github/): Jedes Projekt aus dem WPK „Thinking Architecture through Software Design“ (Jade Hochschule, Blockwoche 16.–20.11.2026) liegt hier als Werkzeug, das zu ihm passt. In der Mitte der Bank liegt eine Ablage, in der du Dateien zwischenlagern kannst.
+Die Werkbank am Ende der [Vibecoding-Allee](https://jade-hs-vibecoding-wpk.github.io/.github/): Die Projekte aus dem WPK „Thinking Architecture through Software Design“ (Jade Hochschule, Blockwoche 16.–20.11.2026) hängen als Pixelsymbole an zwei Blöcken, sortiert nach Funktion. Daneben liegt eine Ablage im Chatfenster, in der du Dateien zwischenlagern kannst.
 
 **Live:** https://jade-hs-vibecoding-wpk.github.io/Jade-Werkbank/
 
+Der Stil ist an Minecraft angelehnt: Pixelschrift, Blöcke in der Inventaransicht, Tooltips und Ablage wie im Spiel. Alle Texturen und Symbole sind selbst gezeichnet (`pixel.js`), es werden keine Spieldateien verwendet. Kein offizielles Minecraft-Produkt, nicht von Mojang oder Microsoft genehmigt oder mit ihnen verbunden.
+
 ## Was die Werkbank kann
 
-- **Werkzeuge:** Ein Klick auf ein Werkzeug öffnet seinen Werkzeugschein mit Beschreibung, Team, Demo, Code und dem Haus in der Allee. Die Liste kommt live aus der Allee (`projects.json`), neue Projekte liegen also von selbst mit auf der Bank. Ist die Allee nicht erreichbar, nimmt die Werkbank die mitgelieferte `projekte.json`.
-- **An der Werkbank ausprobieren:** Die Demo öffnet sich in einem Rahmen, und die Ablage liegt daneben. Zettel aus der Ablage kannst du direkt ins Werkzeug ziehen oder mit ← hineinlegen. Das klappt, weil alle Demos auf derselben Adresse liegen wie die Werkbank (`jade-hs-vibecoding-wpk.github.io`): Die Werkbank lässt die Datei dort fallen, wo du loslässt, oder steckt sie in ein passendes Dateifeld.
-- **Ablage:** Dateien ablegen per Ziehen, Einfügen (Strg+V) oder Auswählen, dazu Notizzettel für Text. Die Dateien liegen im Browser (IndexedDB), es wird nichts hochgeladen. Auf einem anderen Gerät oder in einem anderen Browser ist die Ablage leer.
+- **Werkbank und Kartentisch:** Auf den beiden sichtbaren Seiten jedes Blocks hängen die Werkzeuge an Nägeln, je Funktion eine Reihe mit Schild. Fährst du über ein Symbol, wird es größer, schwingt am Nagel, glänzt und zeigt einen Tooltip mit Funktion und Ziel des Klicks. Mit der Tastatur geht das per Tab, auf dem Handy zeigt das erste Tippen den Tooltip und das zweite öffnet.
+- **Klick:** Läuft die Live-Demo vollständig, öffnet der Klick die Demo. Ist sie nur eingeschränkt nutzbar, öffnet der Klick den Code auf GitHub, der Tooltip sagt warum. Projekte ohne Live-Demo hängen nicht an der Werkbank.
+- **Ablage:** Dateien ablegen per Ziehen, Einfügen (Strg+V) oder „Datei ablegen“. Text in die Chatzeile tippen und Enter drücken legt eine Notiz ab, die Taste T springt in die Chatzeile. Zeilen lassen sich herunterladen, wegräumen oder aus dem Fenster ziehen. Die Dateien liegen im Browser (IndexedDB), es wird nichts hochgeladen. Auf einem anderen Gerät oder in einem anderen Browser ist die Ablage leer.
 
-## Welches Werkzeug zu welchem Projekt
+## Welches Werkzeug wo hängt
 
-Zugeordnet wird über den Hausstil in der Allee, damit Umbenennungen nichts durcheinanderbringen (`werkzeuge.js`).
+Die Zuordnung steht in `projekte.js`. Stand der Demos: 19.11.2026.
 
-| Projekt | Werkzeug | warum |
-|---|---|---|
-| TERRA-Sim | Wasserwaage | zeigt, wo das Wasser steht |
-| ParaGecko | Zollstock | misst jedes Grundstück an den Paragraphen |
-| gebaeudehoehentool-umgebungsmodell | Senklot | für Gebäudehöhen und ihr Umfeld |
-| laserdatei-aus-3D | Cutter | schneidet Karton fürs Modell |
-| Grundstuecksanalyse-Tool | Maßband | misst das Grundstück aus |
-| SiteKick | Zirkel | zieht Kreise um den Standort |
-| Modellbau-Laserdatei-Gebaeude | Pinzette | für die feinen Teile im Modellbau |
-| Energieeffizienz-Oekobilanz-Optimierung | Thermometer | misst, wie warm ein Haus bleibt |
-| CO-Emissionsrechner | Taschenrechner | rechnet die Emissionen zusammen |
-| plan-pruefer | Lupe | prüft Pläne bis ins Detail |
-| urban-analysis-plugin | Pflanzschaufel | setzt Blöcke und Setzlinge |
-| 15-min-stadt-scanner | Stoppuhr | alles in 15 Minuten erreichbar? |
-| fassaden-tool | Farbrolle | für neue Fassaden |
-| treppenplaner | Anschlagwinkel | damit jede Stufe stimmt |
-| Map2Model | Laubsäge | sägt die Karte ins Sperrholz |
-| Workflow_App | Klemmbrett | hält den Ablauf fest |
-| Detailpruefer | Messschieber | misst jedes Detail nach |
-| locus | Stecknadeln | pinnt Standorte auf die Karte |
-| ImmoCheck | Hausschlüssel | schließt die Immobilie auf |
-| urban-analyst | Fernglas | blickt über das ganze Stadtgebiet |
-| MaterialMatch | Musterfächer | findet das passende Material |
-| niedersachsen-cache | Sortierkasten | hält die Karten griffbereit |
-| alles Neue | Schraubenschlüssel | ein Werkzeug für alles, was neu dazukommt |
+| Block | Seite | Gruppe | Projekt | Symbol | Klick öffnet |
+|---|---|---|---|---|---|
+| Kartentisch | links | Standortanalyse | Grundstuecksanalyse-Tool | Analyse-Ebenen | Live-Demo |
+| Kartentisch | links | Standortanalyse | SiteKick | Schwarzplan | Live-Demo |
+| Kartentisch | links | Standortanalyse | locus | Stecknadel | Live-Demo |
+| Kartentisch | links | Standortanalyse | urban-analyst | Fernrohr | Live-Demo |
+| Kartentisch | links | Standortanalyse | 15-min-stadt-scanner | Stoppuhr | Live-Demo |
+| Kartentisch | rechts | Risiko | TERRA-Sim | Unwetter | GitHub (Demo zeigt nur ein Beispielgebiet) |
+| Kartentisch | rechts | Immobilie | ImmoCheck | Haus mit Münze | Live-Demo |
+| Werkbank | links | Modellbau | gebaeudehoehentool-umgebungsmodell | Häuser mit Höhenmaß | Live-Demo |
+| Werkbank | links | Modellbau | Map2Model | Karte mit Modell | Live-Demo |
+| Werkbank | links | Modellbau | laserdatei-aus-3D | Laserkopf | Live-Demo |
+| Werkbank | links | Modellbau | Modellbau-Laserdatei-Gebaeude | Zuschnitt einer Hausansicht | Live-Demo |
+| Werkbank | links | Entwurf | fassaden-tool | Fassade aus Ziegel und Holz | Live-Demo |
+| Werkbank | links | Entwurf | treppenplaner | Treppe | Live-Demo |
+| Werkbank | rechts | Material & Ökobilanz | Energieeffizienz-Oekobilanz-Optimierung | Effizienzbalken | Live-Demo |
+| Werkbank | rechts | Material & Ökobilanz | CO-Emissionsrechner | Taschenrechner | GitHub (Demo rechnet mit Beispieldaten) |
+| Werkbank | rechts | Material & Ökobilanz | MaterialMatch | Materialmuster | Live-Demo |
+| Werkbank | rechts | Prüfen & Planen | plan-pruefer | Bauplan mit Haken | GitHub (Demo prüft nur Beispielpläne) |
+| Werkbank | rechts | Prüfen & Planen | Workflow_App | Klemmbrett | Live-Demo |
+
+Nicht an der Werkbank: ParaGecko und niedersachsen-cache, außerdem urban-analysis-plugin und Detailpruefer, weil sie keine Live-Demo haben. Ein neues Projekt kommt dazu, indem du es in `PROJEKTE` einträgst und in `BLOECKE` einer Gruppe zuordnest. Ein neues Symbol zeichnest du als 16×16-Raster in `pixel.js`.
 
 ## Selbst starten
 
@@ -48,13 +47,13 @@ Reines HTML, CSS und JavaScript ohne Build-Schritt. Weil die Seite ES-Module lä
 python -m http.server 8000
 ```
 
-Dann http://localhost:8000 öffnen. Lokal liegen die Demos auf einer anderen Adresse als die Werkbank, deshalb klappt das Hineinlegen aus der Ablage nur auf der Live-Seite.
+Dann http://localhost:8000 öffnen.
 
 ## Dateien
 
-- `index.html`: Aufbau der Werkbank (Schild, Lochwand, Platte, Zarge, Unterbau)
-- `style.css`: Holz, Lochwand, Zettel und die Ansicht für schmale Bildschirme
-- `app.js`: Projekte laden, Werkzeuge auslegen, Werkzeugschein, Ausprobieren, Ablage
-- `werkzeuge.js`: die Werkzeuge als SVG und ihre Zuordnung zu den Projekten
+- `index.html`: Aufbau der Seite (Kopf, Blöcke, Ablage, Boden)
+- `style.css`: Himmel, Blöcke in 3D, Symbole, Tooltip, Chatfenster und die Ansicht für schmale Bildschirme
+- `app.js`: Blöcke bestücken, Tooltip, Ablage
+- `projekte.js`: welche Projekte wo hängen und wohin der Klick führt
+- `pixel.js`: Texturen und Symbole als Pixelraster, gemalt auf Canvas
 - `ablage.js`: Speichern der Dateien in IndexedDB
-- `projekte.json`: mitgelieferte Projektliste für den Fall, dass die Allee nicht erreichbar ist

@@ -1,262 +1,187 @@
-import { werkzeugFuer, werkzeugSvg, zufall, LOCHWAND } from './werkzeuge.js';
+import { PROJEKTE, BLOECKE } from './projekte.js';
+import { symbolBild, dateiBild, texturen, zufall } from './pixel.js';
 import { ablageOeffnen, eintrag, groesse, sorte } from './ablage.js';
-
-const ALLEE = 'https://jade-hs-vibecoding-wpk.github.io/.github/';
-const QUELLE = `${ALLEE}projects.json`;
-const SELBST = 'Jade-Werkbank';
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-// ---------- Lochwand ----------
-$('#haken').innerHTML = LOCHWAND.map((t) => `<span class="haengt" title="${t.titel}" style="width:${t.b}px">${t.svg}</span>`).join('');
+// ---------- Texturen ----------
+const tex = texturen();
+const wurzel = document.documentElement.style;
+const url = (u) => `url("${u}")`;
+wurzel.setProperty('--tex-wb-seite', url(tex.werkbankSeite));
+wurzel.setProperty('--tex-wb-oben', url(tex.werkbankOben));
+wurzel.setProperty('--tex-kt-seite', url(tex.kartentischSeite));
+wurzel.setProperty('--tex-kt-oben', url(tex.kartentischOben));
+wurzel.setProperty('--tex-erde', url(tex.erde));
+wurzel.setProperty('--tex-gras', url(tex.gras));
+wurzel.setProperty('--tex-stein', url(tex.stein));
 
-// ---------- Projekte laden ----------
-let projekte = [];
+// ---------- Blöcke ----------
+const anzahl = Object.keys(PROJEKTE).length;
 
-async function laden() {
-  try {
-    const r = await fetch(QUELLE, { cache: 'no-cache' });
-    if (!r.ok) throw new Error(r.status);
-    const j = await r.json();
-    $('#quelle').innerHTML = `Werkzeuge live aus der <a href="${ALLEE}">Vibecoding-Allee</a> · Stand ${new Date(j.generatedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`;
-    return j.projects;
-  } catch (e) {
-    console.warn('Allee nicht erreichbar, nehme die mitgelieferte Liste:', e);
-    const j = await (await fetch('projekte.json')).json();
-    $('#quelle').textContent = 'Die Allee ist gerade nicht erreichbar, hier liegt die mitgelieferte Liste.';
-    return j.projects;
-  }
+function ziel(p) {
+  return p.status === 'voll' ? p.demo : p.code;
 }
 
-function werkzeugKarte(p, i) {
-  const w = werkzeugFuer(p);
-  const dreh = (zufall(p.name) - 0.5) * 22;
-  const versatz = (zufall(p.name + 'y') - 0.5) * 10;
-  return `<li class="werkzeug${p.demo ? '' : ' ohne-demo'}" style="--dreh:${dreh.toFixed(1)}deg;--versatz:${versatz.toFixed(1)}px;--i:${i}">
-    <button type="button" data-i="${i}" aria-label="${esc(w.name)}: ${esc(p.title || p.name)}">
-      ${werkzeugSvg(w, { drehen: dreh * 0.6 })}
-      <span class="anhaenger"><small>${p.number ?? ''}</small>${esc(p.title || p.name)}</span>
-    </button>
+function itemHtml(repo, gruppe, block) {
+  const p = PROJEKTE[repo];
+  if (!p) return '';
+  const dreh = ((zufall(repo)() - 0.5) * 14).toFixed(1);
+  const art = p.status === 'voll' ? 'Live-Demo' : 'Code auf GitHub, Demo eingeschränkt';
+  return `<li>
+    <a class="item" href="${esc(ziel(p))}" target="_blank" rel="noopener"
+       data-repo="${esc(repo)}" data-gruppe="${esc(gruppe)}" data-block="${esc(block)}"
+       aria-label="${esc(p.titel)}: ${esc(p.funktion)} (${art})" style="--dreh:${dreh}deg">
+      <span class="pendel"><img src="${symbolBild(p.symbol)}" alt="" draggable="false"><span class="glanz"></span></span>
+    </a>
   </li>`;
 }
 
-function auslegen() {
-  const n = projekte.length, links = Math.ceil(n / 2);
-  $('#werkzeuge-links').innerHTML = projekte.slice(0, links).map((p, i) => werkzeugKarte(p, i)).join('');
-  $('#werkzeuge-rechts').innerHTML = projekte.slice(links).map((p, i) => werkzeugKarte(p, i + links)).join('');
+function seiteHtml(gruppen, block) {
+  return gruppen.map((g) => `
+    <div class="reihe">
+      <h3 class="schild">${esc(g.titel)}</h3>
+      <ul class="haken" style="--proreihe:${g.projekte.length === 5 ? 3 : 4}">
+        ${g.projekte.map((r) => itemHtml(r, g.titel, block)).join('')}
+      </ul>
+    </div>`).join('');
 }
 
+for (const b of BLOECKE) {
+  const el = $(`#block-${b.id}`);
+  el.innerHTML = `<div class="wuerfel">
+    <div class="seite oben"></div>
+    <div class="seite links">${seiteHtml(b.seiten.links, b.name)}</div>
+    <div class="seite rechts">${seiteHtml(b.seiten.rechts, b.name)}</div>
+  </div>`;
+  const n = [...b.seiten.links, ...b.seiten.rechts].reduce((s, g) => s + g.projekte.length, 0);
+  $(`#info-${b.id}`).textContent = `${b.info} · ${n} Werkzeuge`;
+}
+
+// Glanz-Maske: die Symbolgrafik selbst
+for (const a of document.querySelectorAll('.item')) {
+  a.style.setProperty('--sprite', url(symbolBild(PROJEKTE[a.dataset.repo].symbol)));
+}
+
+// ---------- Splash ----------
+const SPRÜCHE = [
+  `${anzahl} Werkzeuge!`,
+  'Jetzt mit Kartentisch!',
+  'Strg+V geht auch!',
+  'Mit KI gebaut!',
+  'Frisch aus der Allee!',
+  'Blockwoche 2026!',
+  'Nach Funktion sortiert!',
+  'Pixel für Pixel!',
+];
+$('#splash').textContent = SPRÜCHE[Math.floor(Math.random() * SPRÜCHE.length)];
+
+// ---------- Tooltip ----------
+const tip = $('#tooltip');
+let tipFuer = null;
+
+function tipFuellen(a) {
+  const p = PROJEKTE[a.dataset.repo];
+  const voll = p.status === 'voll';
+  tip.innerHTML = `
+    <b>${esc(p.titel)}</b>
+    <span class="tt-text">${esc(p.funktion)}</span>
+    <span class="tt-gruppe">${esc(a.dataset.block)} · ${esc(a.dataset.gruppe)}</span>
+    ${voll
+      ? '<span class="tt-ziel ok">▶ Klick öffnet die Live-Demo</span>'
+      : `<span class="tt-ziel warn">⚠ Demo eingeschränkt: Klick öffnet GitHub</span><span class="tt-hinweis">${esc(p.hinweis ?? '')}</span>`}`;
+  tip.hidden = false;
+  tipFuer = a;
+}
+
+function tipSetzen(x, y) {
+  const r = tip.getBoundingClientRect();
+  let lx = x + 18, ly = y - r.height - 10;
+  if (lx + r.width > innerWidth - 8) lx = x - r.width - 18;
+  if (ly < 8) ly = y + 24;
+  if (ly + r.height > innerHeight - 8) ly = innerHeight - r.height - 8;
+  tip.style.transform = `translate(${Math.max(8, Math.round(lx))}px, ${Math.round(ly)}px)`;
+}
+
+function tipAmElement(a) {
+  const r = a.getBoundingClientRect();
+  tipFuellen(a);
+  tipSetzen(r.right, r.top + r.height / 2);
+}
+
+function tipWeg() {
+  tip.hidden = true;
+  tipFuer = null;
+}
+
+document.addEventListener('pointerover', (e) => {
+  if (e.pointerType === 'touch') return;
+  const a = e.target.closest?.('.item');
+  if (a && a !== tipFuer) { tipFuellen(a); tipSetzen(e.clientX, e.clientY); }
+});
+document.addEventListener('pointermove', (e) => {
+  if (tipFuer && e.pointerType !== 'touch') tipSetzen(e.clientX, e.clientY);
+});
+document.addEventListener('pointerout', (e) => {
+  if (e.pointerType === 'touch') return;
+  const a = e.target.closest?.('.item');
+  if (a && !a.contains(e.relatedTarget) && !a.matches(':focus-visible')) tipWeg();
+});
+document.addEventListener('focusin', (e) => {
+  const a = e.target.closest?.('.item');
+  if (a && a.matches(':focus-visible')) tipAmElement(a);
+});
+document.addEventListener('focusout', (e) => {
+  if (e.target.closest?.('.item')) tipWeg();
+});
+
+// Auf dem Handy: erstes Tippen wählt aus und zeigt den Tooltip, zweites Tippen öffnet
+let letzterZeiger = 'mouse';
+document.addEventListener('pointerdown', (e) => { letzterZeiger = e.pointerType; }, true);
 document.addEventListener('click', (e) => {
-  const b = e.target.closest('.werkzeug button');
-  if (b) zeigen(+b.dataset.i);
-});
-
-// ---------- Werkzeugschein ----------
-const schein = $('#schein');
-let aktuell = -1;
-
-function zeigen(i, { verlauf = true } = {}) {
-  const p = projekte[i];
-  if (!p) return;
-  aktuell = i;
-  const w = werkzeugFuer(p);
-  $('#schein-werkzeug').innerHTML = werkzeugSvg(w);
-  $('#schein-ueber').textContent = `Haus ${p.number ?? '–'} · ${w.name}`;
-  $('#schein-titel').textContent = p.title || p.name;
-  $('#schein-warum').textContent = w.warum;
-  $('#schein-text').textContent = p.description || 'Noch ohne Beschreibung.';
-  const img = $('#schein-vorschau');
-  img.hidden = !p.image;
-  if (p.image) { img.src = p.image; img.onerror = () => { img.hidden = true; }; }
-  $('#schein-team').innerHTML = (p.team ?? []).map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener"><img src="${esc(t.avatar)}&s=48" alt="" width="24" height="24" loading="lazy">${esc(t.login)}</a></li>`).join('');
-  const demo = $('#schein-demo');
-  $('#schein-ohne').hidden = !!p.demo;
-  $('#schein-probe').hidden = !p.demo;
-  demo.hidden = !p.demo;
-  if (p.demo) demo.href = p.demo;
-  $('#schein-code').href = p.url;
-  $('#schein-allee').href = `${ALLEE}#${encodeURIComponent(p.name)}`;
-  if (!schein.open) schein.showModal();
-  if (verlauf) history.replaceState(null, '', `#${encodeURIComponent(p.name)}`);
-}
-
-function scheinZu() {
-  if (schein.open) schein.close();
-}
-schein.addEventListener('close', () => {
-  if (probe.hidden) history.replaceState(null, '', location.pathname + location.search);
-});
-schein.addEventListener('click', (e) => {
-  if (e.target === schein || e.target.closest('[data-close]')) scheinZu();
-});
-
-// ---------- Ausprobieren ----------
-const probe = $('#probe');
-let rahmen = $('#probe-rahmen');
-
-// jedes Mal ein frischer Rahmen: ein laufender Ladevorgang hängt sonst am alten
-function neuerRahmen(src) {
-  const neu = rahmen.cloneNode(false);
-  neu.removeAttribute('src');
-  neu.addEventListener('load', () => brueckeBauen(neu));
-  rahmen.replaceWith(neu);
-  rahmen = neu;
-  if (src) rahmen.src = src;
-}
-
-function ausprobieren(i) {
-  const p = projekte[i];
-  if (!p?.demo) return;
-  scheinZu();
-  $('#probe-titel').textContent = p.title || p.name;
-  $('#probe-werkzeug').innerHTML = werkzeugSvg(werkzeugFuer(p));
-  $('#probe-tab').href = p.demo;
-  neuerRahmen(p.demo);
-  probe.hidden = false;
-  document.body.classList.add('probiert');
-  history.replaceState(null, '', `#${encodeURIComponent(p.name)}/probe`);
-  $('#probe-zu').focus();
-}
-
-function probeZu() {
-  probe.hidden = true;
-  neuerRahmen(null);
-  document.body.classList.remove('probiert');
-  history.replaceState(null, '', location.pathname + location.search);
-}
-
-// ---------- Brücke: Zettel ins Werkzeug legen ----------
-// Browser geben beim Ziehen in einen anderen Rahmen nur Text weiter, nicht die Datei.
-// Die Demos liegen aber auf derselben Adresse wie die Werkbank (github.io der Organisation),
-// also legt die Werkbank die Datei selbst hinein: als Drop an der Stelle oder ins Dateifeld.
-function rahmenDoc() {
-  try { return rahmen.contentDocument?.defaultView ? rahmen.contentDocument : null; } catch { return null; }
-}
-
-function akzeptiert(accept, rec) {
-  if (!accept) return true;
-  const ext = `.${(rec.name.split('.').pop() || '').toLowerCase()}`;
-  return accept.split(',').map((a) => a.trim().toLowerCase()).some((a) =>
-    a === ext || a === rec.type || (a.endsWith('/*') && rec.type.startsWith(a.slice(0, -1))));
-}
-
-function insWerkzeug(id, punkt) {
-  const rec = zettel.find((r) => r.id === id);
-  const doc = rahmenDoc();
-  if (!rec) return 'weg';
-  if (!doc) return 'fremd';
-  const W = doc.defaultView;
-  const datei = new W.File([rec.blob], rec.name, { type: rec.type || 'application/octet-stream', lastModified: rec.added });
-  const paket = () => { const dt = new W.DataTransfer(); dt.items.add(datei); return dt; };
-  const fallen = (ziel, x, y) => {
-    const o = { bubbles: true, cancelable: true, composed: true, clientX: x, clientY: y };
-    ziel.dispatchEvent(new W.DragEvent('dragenter', { ...o, dataTransfer: paket() }));
-    ziel.dispatchEvent(new W.DragEvent('dragover', { ...o, dataTransfer: paket() }));
-    return !ziel.dispatchEvent(new W.DragEvent('drop', { ...o, dataTransfer: paket() }));
-  };
-  // 1. dort fallen lassen, wo losgelassen wurde
-  if (punkt && fallen(doc.elementFromPoint(punkt.x, punkt.y) ?? doc.body, punkt.x, punkt.y)) return 'drop';
-  // 2. ein passendes Dateifeld befüllen
-  const felder = [...doc.querySelectorAll('input[type=file]:not([disabled])')];
-  const feld = felder.find((f) => akzeptiert(f.accept, rec));
-  if (feld) {
-    feld.files = paket().files;
-    feld.dispatchEvent(new W.Event('input', { bubbles: true }));
-    feld.dispatchEvent(new W.Event('change', { bubbles: true }));
-    return 'feld';
+  const a = e.target.closest('.item');
+  if (!a) {
+    if (letzterZeiger === 'touch') { document.querySelector('.item.gewaehlt')?.classList.remove('gewaehlt'); tipWeg(); }
+    return;
   }
-  // 3. ohne Ort: in die Mitte fallen lassen
-  if (!punkt) {
-    const x = W.innerWidth / 2, y = W.innerHeight / 2;
-    if (fallen(doc.elementFromPoint(x, y) ?? doc.body, x, y)) return 'drop';
-  }
-  return 'nichts';
-}
-
-function einlegenMelden(ergebnis, id) {
-  const name = zettel.find((r) => r.id === id)?.name ?? 'Datei';
-  toast({
-    drop: `„${name}“ liegt jetzt im Werkzeug.`,
-    feld: `„${name}“ steckt jetzt im Dateifeld des Werkzeugs.`,
-    nichts: 'Das Werkzeug nimmt hier keine Datei an. Lade sie mit ↓ herunter und öffne sie dort.',
-    fremd: 'Dieses Werkzeug lässt sich von außen nicht befüllen. Lade die Datei mit ↓ herunter.',
-    weg: 'Die Datei liegt nicht mehr in der Ablage.',
-  }[ergebnis]);
-}
-
-function brueckeBauen(f) {
-  if (f !== rahmen) return;
-  const doc = rahmenDoc();
-  if (!doc) return;
-  const unser = (e) => [...(e.dataTransfer?.types ?? [])].includes('application/x-werkbank');
-  doc.addEventListener('dragover', (e) => {
-    if (!unser(e)) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  }, true);
-  doc.addEventListener('drop', (e) => {
-    if (!unser(e)) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    const id = e.dataTransfer.getData('application/x-werkbank');
-    einlegenMelden(insWerkzeug(id, { x: e.clientX, y: e.clientY }), id);
-  }, true);
-}
-
-document.addEventListener('click', (e) => {
-  const b = e.target.closest('[data-ein]');
-  if (b) einlegenMelden(insWerkzeug(b.dataset.ein), b.dataset.ein);
+  if (letzterZeiger !== 'touch' || a.classList.contains('gewaehlt')) return;
+  e.preventDefault();
+  document.querySelector('.item.gewaehlt')?.classList.remove('gewaehlt');
+  a.classList.add('gewaehlt');
+  tipAmElement(a);
 });
-
-$('#schein-probe').addEventListener('click', () => ausprobieren(aktuell));
-$('#probe-zu').addEventListener('click', probeZu);
-$('#probe-ablage-knopf').addEventListener('click', (e) => {
-  const an = probe.classList.toggle('ohne-ablage');
-  e.currentTarget.setAttribute('aria-pressed', String(!an));
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !probe.hidden && !schein.open && !$('#notiz').open) probeZu();
-});
-
-// ---------- Schublade ----------
-$('#schublade').addEventListener('click', (e) => {
-  const ueber = $('#ueber');
-  ueber.hidden = !ueber.hidden;
-  e.currentTarget.setAttribute('aria-expanded', String(!ueber.hidden));
-  e.currentTarget.classList.toggle('offen', !ueber.hidden);
-});
+addEventListener('scroll', () => {
+  if (!tipFuer) return;
+  document.querySelector('.item.gewaehlt')?.classList.remove('gewaehlt');
+  tipWeg();
+}, { passive: true });
 
 // ---------- Ablage ----------
 const store = await ablageOeffnen();
 let zettel = [];
+let neueIds = new Set();
 const urls = new Map();
 
-function toast(text) {
+function toast(titel, text) {
+  $('#toast-titel').textContent = titel;
+  $('#toast-text').textContent = text;
   const t = $('#toast');
-  t.textContent = text;
   t.classList.add('da');
   clearTimeout(toast.t);
-  toast.t = setTimeout(() => t.classList.remove('da'), 2600);
+  toast.t = setTimeout(() => t.classList.remove('da'), 2800);
 }
 
-function zettelHtml(rec, i) {
+function zeileHtml(rec) {
   const { sorte: s, ext } = sorte(rec);
-  const url = urls.get(rec.id);
-  const dreh = ((zufall(rec.id) - 0.5) * 5).toFixed(1);
-  const bild = s === 'bild' || s === 'vektor'
-    ? `<img src="${url}" alt="">`
-    : `<span class="ext">${esc(ext || '?')}</span>`;
-  const datum = new Date(rec.added).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-  return `<li class="zettel sorte-${s}" draggable="true" data-id="${rec.id}" style="--dreh:${dreh}deg;--i:${i}">
-    <span class="zettel-bild">${bild}</span>
-    <span class="zettel-text"><b title="${esc(rec.name)}">${esc(rec.name)}</b><small>${groesse(rec.size)} · ${datum}</small></span>
-    <span class="zettel-knoepfe">
-      <button type="button" class="mini nur-probe" data-ein="${rec.id}" title="Ins Werkzeug legen" aria-label="${esc(rec.name)} ins Werkzeug legen">←</button>
-      <a class="mini" href="${url}" download="${esc(rec.name)}" title="Herunterladen" aria-label="${esc(rec.name)} herunterladen">↓</a>
-      <button type="button" class="mini" data-weg="${rec.id}" title="Wegräumen" aria-label="${esc(rec.name)} wegräumen">×</button>
-    </span>
+  const u = urls.get(rec.id);
+  const bildSrc = s === 'bild' || s === 'vektor' ? u : dateiBild(s);
+  const zeit = new Date(rec.added).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  return `<li class="zeile${neueIds.has(rec.id) ? ' neu' : ''}" draggable="true" data-id="${rec.id}">
+    <img class="z-bild" src="${bildSrc}" alt="" draggable="false">
+    <span class="z-text"><b title="${esc(rec.name)}">${esc(rec.name)}</b><small>${esc(ext ? ext.toUpperCase() : 'Datei')} · ${groesse(rec.size)} · ${zeit}</small></span>
+    <a class="z-aktion" href="${u}" download="${esc(rec.name)}" title="Herunterladen" aria-label="${esc(rec.name)} herunterladen">[↓]</a>
+    <button type="button" class="z-aktion weg" data-weg="${rec.id}" title="Wegräumen" aria-label="${esc(rec.name)} wegräumen">[×]</button>
   </li>`;
 }
 
@@ -265,15 +190,13 @@ async function neuZeichnen() {
   const ids = new Set(zettel.map((z) => z.id));
   for (const [id, u] of urls) if (!ids.has(id)) { URL.revokeObjectURL(u); urls.delete(id); }
   for (const z of zettel) if (!urls.has(z.id)) urls.set(z.id, URL.createObjectURL(z.blob));
-  const html = zettel.map(zettelHtml).join('');
-  $('#zettel-liste').innerHTML = html;
-  $('#probe-liste').innerHTML = html;
+  $('#zettel-liste').innerHTML = zettel.map(zeileHtml).join('');
+  neueIds = new Set();
   const summe = zettel.reduce((s, z) => s + z.size, 0);
-  $('#ablage-zahl').textContent = zettel.length ? `${zettel.length} ${zettel.length === 1 ? 'Datei' : 'Dateien'} · ${groesse(summe)}` : '';
+  $('#ablage-zahl').textContent = zettel.length ? `${zettel.length} ${zettel.length === 1 ? 'Datei' : 'Dateien'} · ${groesse(summe)}` : 'leer';
   $('#ablage-leer').hidden = zettel.length > 0;
   $('#ablage-leeren').hidden = zettel.length === 0;
-  $('#ablage').classList.toggle('voll', zettel.length > 0);
-  if (!store.dauerhaft) $('#ablage-hinweis').textContent = 'Dieser Browser erlaubt keinen Speicher: die Ablage hält nur bis zum Neuladen.';
+  if (!store.dauerhaft) $('#ablage-hinweis').textContent = 'Dieser Browser erlaubt keinen Speicher: Die Ablage hält nur bis zum Neuladen.';
 }
 
 let dauerhaftGefragt = false;
@@ -281,39 +204,64 @@ async function ablegen(dateien) {
   const liste = [...dateien].filter((d) => d && d.size >= 0);
   if (!liste.length) return;
   try {
-    for (const d of liste) await store.rein(eintrag(d));
+    for (const d of liste) {
+      const rec = eintrag(d);
+      neueIds.add(rec.id);
+      await store.rein(rec);
+    }
   } catch (e) {
     console.error(e);
-    toast('Konnte nicht ablegen. Ist der Speicher voll?');
+    toast('Nicht abgelegt', 'Konnte nicht ablegen. Ist der Speicher voll?');
     return;
   }
   if (!dauerhaftGefragt && navigator.storage?.persist) { dauerhaftGefragt = true; navigator.storage.persist().catch(() => {}); }
   await neuZeichnen();
-  toast(liste.length === 1 ? `„${liste[0].name}“ liegt in der Ablage.` : `${liste.length} Dateien liegen in der Ablage.`);
+  $('#chat-verlauf').scrollTop = 0;
+  toast('Abgelegt!', liste.length === 1 ? liste[0].name : `${liste.length} Dateien`);
 }
 
 document.addEventListener('click', async (e) => {
   const weg = e.target.closest('[data-weg]');
-  if (weg) {
-    await store.raus(weg.dataset.weg);
-    await neuZeichnen();
-  }
+  if (!weg) return;
+  await store.raus(weg.dataset.weg);
+  await neuZeichnen();
 });
 
 $('#ablage-leeren').addEventListener('click', async () => {
   if (!confirm(`Alle ${zettel.length} Dateien aus der Ablage wegräumen? Das lässt sich nicht rückgängig machen.`)) return;
   await store.leeren();
   await neuZeichnen();
-  toast('Ablage ist leer.');
+  toast('Ablage geleert', 'Alle Dateien sind weggeräumt.');
 });
 
-for (const id of ['#datei-wahl', '#probe-wahl']) {
-  $(id).addEventListener('change', (e) => { ablegen(e.target.files); e.target.value = ''; });
-}
+$('#datei-wahl').addEventListener('change', (e) => { ablegen(e.target.files); e.target.value = ''; });
 
-// Zettel herausziehen: auf den Desktop (Chrome) oder in ein Werkzeug, das Dateien annimmt
+// Notiz über die Chatzeile
+function zeitstempel() {
+  const d = new Date(), p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+}
+$('#notiz-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const feld = $('#notiz-text');
+  const text = feld.value;
+  if (!text.trim()) return;
+  ablegen([new File([text], `Notiz-${zeitstempel()}.txt`, { type: 'text/plain' })]);
+  feld.value = '';
+});
+$('#notiz-knopf').addEventListener('click', () => $('#notiz-text').focus());
+
+// T öffnet die Chatzeile, wie im Spiel
+document.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() !== 't' || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+  e.preventDefault();
+  $('#notiz-text').focus();
+});
+
+// Zeile herausziehen: auf den Desktop (Chrome) oder in ein Programm, das Dateien annimmt
 document.addEventListener('dragstart', (e) => {
-  const z = e.target.closest?.('.zettel');
+  const z = e.target.closest?.('.zeile');
   if (!z) return;
   const rec = zettel.find((r) => r.id === z.dataset.id);
   if (!rec) return;
@@ -321,37 +269,37 @@ document.addEventListener('dragstart', (e) => {
   dt.effectAllowed = 'copy';
   dt.setData('application/x-werkbank', rec.id);
   try { dt.items.add(new File([rec.blob], rec.name, { type: rec.type || 'application/octet-stream' })); } catch { /* nicht überall erlaubt */ }
-  const url = urls.get(rec.id);
-  dt.setData('DownloadURL', `${rec.type || 'application/octet-stream'}:${rec.name}:${url}`);
-  dt.setData('text/uri-list', url);
+  const u = urls.get(rec.id);
+  dt.setData('DownloadURL', `${rec.type || 'application/octet-stream'}:${rec.name}:${u}`);
+  dt.setData('text/uri-list', u);
   dt.setData('text/plain', rec.name);
   z.classList.add('zieht');
 });
-document.addEventListener('dragend', (e) => e.target.closest?.('.zettel')?.classList.remove('zieht'));
+document.addEventListener('dragend', (e) => e.target.closest?.('.zeile')?.classList.remove('zieht'));
 
 // Dateien von außen annehmen, überall auf der Seite
 let ziehTiefe = 0;
 const vonAussen = (e) => e.dataTransfer && [...e.dataTransfer.types].includes('Files') && ![...e.dataTransfer.types].includes('application/x-werkbank');
-const ziel = () => (probe.hidden ? $('#ablage') : $('#probe-ablage'));
+const chat = $('#ablage');
 
-window.addEventListener('dragenter', (e) => {
+addEventListener('dragenter', (e) => {
   if (!vonAussen(e)) return;
   e.preventDefault();
   ziehTiefe++;
-  ziel().classList.add('drueber');
+  chat.classList.add('drueber');
 });
-window.addEventListener('dragover', (e) => {
+addEventListener('dragover', (e) => {
   if (!vonAussen(e)) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'copy';
 });
-window.addEventListener('dragleave', (e) => {
+addEventListener('dragleave', (e) => {
   if (!vonAussen(e)) return;
-  if (--ziehTiefe <= 0) { ziehTiefe = 0; document.querySelectorAll('.drueber').forEach((el) => el.classList.remove('drueber')); }
+  if (--ziehTiefe <= 0) { ziehTiefe = 0; chat.classList.remove('drueber'); }
 });
-window.addEventListener('drop', (e) => {
+addEventListener('drop', (e) => {
   ziehTiefe = 0;
-  document.querySelectorAll('.drueber').forEach((el) => el.classList.remove('drueber'));
+  chat.classList.remove('drueber');
   if (!vonAussen(e)) return;
   e.preventDefault();
   ablegen(e.dataTransfer.files);
@@ -376,35 +324,4 @@ document.addEventListener('paste', (e) => {
   }
 });
 
-function zeitstempel() {
-  const d = new Date(), p = (n) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
-}
-
-// Notizzettel schreiben
-const notiz = $('#notiz');
-$('#notiz-neu').addEventListener('click', () => {
-  $('#notiz-name').value = '';
-  $('#notiz-text').value = '';
-  notiz.showModal();
-  $('#notiz-text').focus();
-});
-notiz.addEventListener('close', () => {
-  const text = $('#notiz-text').value;
-  if (notiz.returnValue !== 'ok' || !text.trim()) return;
-  let name = $('#notiz-name').value.trim().replace(/[\\/:*?"<>|]+/g, '-') || `Notiz-${zeitstempel()}`;
-  if (!/\.[a-z0-9]{1,5}$/i.test(name)) name += '.txt';
-  ablegen([new File([text], name, { type: 'text/plain' })]);
-});
-
-// ---------- Start ----------
 await neuZeichnen();
-projekte = (await laden())
-  .filter((p) => p.name !== SELBST)
-  .sort((a, b) => (a.number ?? 999) - (b.number ?? 999));
-auslegen();
-document.body.classList.add('bereit');
-
-const [hashName, hashModus] = decodeURIComponent(location.hash.slice(1)).split('/');
-const start = projekte.findIndex((p) => p.name === hashName);
-if (start >= 0) (hashModus === 'probe' && projekte[start].demo ? ausprobieren : zeigen)(start);
