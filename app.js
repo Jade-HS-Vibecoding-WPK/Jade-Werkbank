@@ -18,22 +18,33 @@ wurzel.setProperty('--tex-gras', url(tex.gras));
 wurzel.setProperty('--tex-stein', url(tex.stein));
 
 // ---------- Blöcke ----------
-const anzahl = Object.keys(PROJEKTE).length;
+const anzahl = Object.values(PROJEKTE).filter((p) => p.status !== 'bald').length;
 
 function ziel(p) {
+  if (p.status === 'bald') return null;
   return p.status === 'voll' ? p.demo : p.code;
 }
+
+const ART = {
+  voll: 'Live-Demo',
+  eingeschraenkt: 'Code auf GitHub, Demo eingeschränkt',
+  github: 'Code auf GitHub, keine Web-Demo',
+  bald: 'kommt später',
+};
 
 function itemHtml(repo, gruppe, block) {
   const p = PROJEKTE[repo];
   if (!p) return '';
   const dreh = ((zufall(repo)() - 0.5) * 14).toFixed(1);
-  const art = p.status === 'voll' ? 'Live-Demo' : 'Code auf GitHub, Demo eingeschränkt';
+  const daten = `data-repo="${esc(repo)}" data-gruppe="${esc(gruppe)}" data-block="${esc(block)}"
+       aria-label="${esc(p.titel)}: ${esc(p.funktion)} (${ART[p.status]})" style="--dreh:${dreh}deg"`;
+  const bild = `<img src="${symbolBild(p.symbol)}" alt="" draggable="false">`;
+  if (p.status === 'bald') {
+    return `<li class="frei"><span class="item platzhalter" tabindex="0" role="img" ${daten}><span class="pendel">${bild}</span></span></li>`;
+  }
   return `<li>
-    <a class="item" href="${esc(ziel(p))}" target="_blank" rel="noopener"
-       data-repo="${esc(repo)}" data-gruppe="${esc(gruppe)}" data-block="${esc(block)}"
-       aria-label="${esc(p.titel)}: ${esc(p.funktion)} (${art})" style="--dreh:${dreh}deg">
-      <span class="pendel"><img src="${symbolBild(p.symbol)}" alt="" draggable="false"><span class="glanz"></span></span>
+    <a class="item" href="${esc(ziel(p))}" target="_blank" rel="noopener" ${daten}>
+      <span class="pendel">${bild}<span class="glanz"></span></span>
     </a>
   </li>`;
 }
@@ -42,7 +53,7 @@ function seiteHtml(gruppen, block) {
   return gruppen.map((g) => `
     <div class="reihe">
       <h3 class="schild">${esc(g.titel)}</h3>
-      <ul class="haken" style="--proreihe:${g.projekte.length === 5 ? 3 : 4}">
+      <ul class="haken" style="--proreihe:${g.projekte.length > 4 ? 3 : 4}">
         ${g.projekte.map((r) => itemHtml(r, g.titel, block)).join('')}
       </ul>
     </div>`).join('');
@@ -55,8 +66,9 @@ for (const b of BLOECKE) {
     <div class="seite links">${seiteHtml(b.seiten.links, b.name)}</div>
     <div class="seite rechts">${seiteHtml(b.seiten.rechts, b.name)}</div>
   </div>`;
-  const n = [...b.seiten.links, ...b.seiten.rechts].reduce((s, g) => s + g.projekte.length, 0);
-  $(`#info-${b.id}`).textContent = `${b.info} · ${n} Werkzeuge`;
+  const alle = [...b.seiten.links, ...b.seiten.rechts].flatMap((g) => g.projekte).map((r) => PROJEKTE[r]).filter(Boolean);
+  const bald = alle.filter((p) => p.status === 'bald').length;
+  $(`#info-${b.id}`).textContent = `${b.info} · ${alle.length - bald} Werkzeuge${bald ? `, ${bald} kommt noch` : ''}`;
 }
 
 // Glanz-Maske: die Symbolgrafik selbst
@@ -83,14 +95,18 @@ let tipFuer = null;
 
 function tipFuellen(a) {
   const p = PROJEKTE[a.dataset.repo];
-  const voll = p.status === 'voll';
+  const ziel = {
+    voll: '<span class="tt-ziel ok">▶ Klick öffnet die Live-Demo</span>',
+    eingeschraenkt: '<span class="tt-ziel warn">⚠ Demo eingeschränkt: Klick öffnet GitHub</span>',
+    github: '<span class="tt-ziel github">▶ Klick öffnet das Repo auf GitHub</span>',
+    bald: '<span class="tt-ziel bald">⌛ Der Platz ist reserviert, das Werkzeug kommt später</span>',
+  }[p.status];
   tip.innerHTML = `
     <b>${esc(p.titel)}</b>
     <span class="tt-text">${esc(p.funktion)}</span>
     <span class="tt-gruppe">${esc(a.dataset.block)} · ${esc(a.dataset.gruppe)}</span>
-    ${voll
-      ? '<span class="tt-ziel ok">▶ Klick öffnet die Live-Demo</span>'
-      : `<span class="tt-ziel warn">⚠ Demo eingeschränkt: Klick öffnet GitHub</span><span class="tt-hinweis">${esc(p.hinweis ?? '')}</span>`}`;
+    ${ziel}
+    ${p.hinweis ? `<span class="tt-hinweis">${esc(p.hinweis)}</span>` : ''}`;
   tip.hidden = false;
   tipFuer = a;
 }

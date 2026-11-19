@@ -1,8 +1,10 @@
 // Welche Projekte auf welchem Block hängen, sortiert nach Funktion.
-// Nur Projekte mit Live-Demo sind dabei. Ist die Demo nur eingeschränkt nutzbar,
-// führt der Klick zum Code auf GitHub (status: 'eingeschraenkt').
-// Nicht dabei: ParaGecko, niedersachsen-cache (Datendienst) und Projekte ohne Demo
-// (urban-analysis-plugin, Detailpruefer).
+// status bestimmt, wohin der Klick führt:
+//   'voll'           Live-Demo läuft, Klick öffnet die Demo
+//   'eingeschraenkt' Demo nur eingeschränkt nutzbar, Klick öffnet GitHub
+//   'github'         keine Web-Demo (z. B. QGIS-Plugin), Klick öffnet GitHub
+//   'bald'           Platz ist reserviert, das Symbol hängt als Schatten ohne Link
+// Nicht dabei: ParaGecko und niedersachsen-cache (Datendienst).
 
 const ORG = 'https://github.com/Jade-HS-Vibecoding-WPK';
 const PAGES = 'https://jade-hs-vibecoding-wpk.github.io';
@@ -25,6 +27,11 @@ export const PROJEKTE = Object.fromEntries([
   p('locus', 'Locus', 'pin', 'Standortanalyse für jeden Ort in Deutschland: Mobilität, Grün, Nutzungen und Defizite.'),
   p('urban-analyst', 'Urban Analyst', 'fernrohr', 'Städtebauliche Analysepläne aus OpenStreetMap, direkt im Browser.'),
   p('15-min-stadt-scanner', '15-Minuten-Stadt', 'uhr', 'Klick auf die Karte zeigt, was zu Fuß in 5 und 10 Minuten erreichbar ist.'),
+  p('urban-analysis-plugin', 'Urban Analysis Plugin', 'puzzle', 'QGIS-Plugin: sammelt Daten, führt sie zusammen, bereinigt Dopplungen und liefert erste Analysen.', {
+    status: 'github',
+    demo: null,
+    hinweis: 'Läuft in QGIS, nicht im Browser.',
+  }),
   p('TERRA-Sim', 'TERRA Sim', 'sturm', '3D-Stadtmodell mit Simulation von Hochwasser, Starkregen und Sturm.', {
     status: 'eingeschraenkt',
     hinweis: 'Die Demo zeigt nur ein fertig berechnetes Beispielgebiet.',
@@ -47,6 +54,11 @@ export const PROJEKTE = Object.fromEntries([
     status: 'eingeschraenkt',
     hinweis: 'Die Demo spielt nur Beispielpläne ab, eigene Pläne prüft sie nicht.',
   }),
+  // Detailprüfer: Platz ist reserviert. Wenn die Demo online ist, status: 'voll' setzen und demo: null entfernen.
+  p('Detailpruefer', 'Detailprüfer', 'wandaufbau', 'Prüft Bauteilaufbauten von Wand, Dach und Boden: Schichten, Dämmung, U-Wert und Tauwasser.', {
+    status: 'bald',
+    demo: null,
+  }),
   p('Workflow_App', 'Workflow App', 'klemmbrett', 'Tages-, Wochen- und Projektplanung mit Aufgaben und Zielen, auch fürs Handy.'),
 ].map((x) => [x.repo, x]));
 
@@ -58,7 +70,7 @@ export const BLOECKE = [
     info: 'Karte, Standort und Analyse',
     seiten: {
       links: [
-        { titel: 'Standortanalyse', projekte: ['Grundstuecksanalyse-Tool', 'SiteKick', 'locus', 'urban-analyst', '15-min-stadt-scanner'] },
+        { titel: 'Standortanalyse', projekte: ['Grundstuecksanalyse-Tool', 'SiteKick', 'locus', 'urban-analyst', '15-min-stadt-scanner', 'urban-analysis-plugin'] },
       ],
       rechts: [
         { titel: 'Risiko', projekte: ['TERRA-Sim'] },
@@ -77,7 +89,7 @@ export const BLOECKE = [
       ],
       rechts: [
         { titel: 'Material & Ökobilanz', projekte: ['Energieeffizienz-Oekobilanz-Optimierung', 'CO-Emissionsrechner', 'MaterialMatch'] },
-        { titel: 'Prüfen & Planen', projekte: ['plan-pruefer', 'Workflow_App'] },
+        { titel: 'Prüfen & Planen', projekte: ['plan-pruefer', 'Detailpruefer', 'Workflow_App'] },
       ],
     },
   },

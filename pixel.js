@@ -500,6 +500,30 @@ const SYMBOLE = {
     return d < 0.5 && px * dy - py * dx > 0 ? 'w' : 'y';
   })),
 
+  // Urban Analysis Plugin: Puzzleteil (Plugin) mit Karte darauf
+  puzzle: () => umranden(malen(raster(), (x, y) => {
+    const koerper = x >= 1 && x <= 10 && y >= 5 && y <= 14;
+    const knopfOben = (x + 0.5 - 5.5) ** 2 + (y + 0.5 - 3) ** 2 <= 4.84;
+    const knopfRechts = (x + 0.5 - 12.6) ** 2 + (y + 0.5 - 9.5) ** 2 <= 4.84;
+    if (!koerper && !knopfOben && !knopfRechts) return null;
+    if (x + y === 13 || x + y === 14) return 'b';
+    if (y === 10) return 'W';
+    if (x === 4 && y > 10) return 'W';
+    return (x * 7 + y * 3) % 5 === 0 ? 'L' : 'l';
+  })),
+
+  // Detailprüfer: Wandaufbau im Schnitt
+  wandaufbau: () => umranden(malen(raster(), (x, y) => {
+    if (x < 2 || x > 13 || y < 1 || y > 14) return null;
+    if (x <= 3) return x === 2 ? 'w' : 'W';
+    if (x <= 7) {
+      if ((y - 1) % 3 === 2) return 'P';
+      return (x + (Math.floor((y - 1) / 3) % 2) * 2) % 4 === 0 ? 'P' : 'e';
+    }
+    if (x <= 11) return x === 8 + [0, 1, 2, 3, 2, 1][y % 6] ? 'o' : 'y';
+    return x === 12 ? 'g' : 's';
+  })),
+
   // MaterialMatch: drei Materialmuster
   muster: () => {
     const g = raster();

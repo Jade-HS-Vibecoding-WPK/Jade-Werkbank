@@ -369,6 +369,18 @@ a:hover { color: var(--weiss); }
   opacity: 1;
   animation: glanz 1.6s linear infinite;
 }
+/* Reservierter Platz: das Symbol hängt ausgegraut, ohne Link */
+.item.platzhalter { cursor: help; }
+.item.platzhalter img {
+  filter: grayscale(1) brightness(0.8) opacity(0.45);
+}
+.item.platzhalter:hover, .item.platzhalter:focus-visible, .item.platzhalter.gewaehlt {
+  transform: scale(1.14);
+}
+.item.platzhalter:hover img, .item.platzhalter:focus-visible img, .item.platzhalter.gewaehlt img {
+  filter: grayscale(1) opacity(0.85) drop-shadow(calc(var(--k) * 0.008) calc(var(--k) * 0.012) 0 rgba(0, 0, 0, 0.35));
+}
+
 @keyframes pendeln {
   0% { transform: rotate(var(--dreh, 0deg)); }
   22% { transform: rotate(-11deg); }
@@ -409,6 +421,8 @@ a:hover { color: var(--weiss); }
 .tt-gruppe { color: var(--blau); text-shadow: 2px 2px 0 #15153f; }
 .tt-ziel.ok { color: var(--gruen); text-shadow: 2px 2px 0 #153f15; }
 .tt-ziel.warn { color: var(--gold); text-shadow: 2px 2px 0 #3f2a00; }
+.tt-ziel.github { color: var(--aqua); text-shadow: 2px 2px 0 #153f3f; }
+.tt-ziel.bald { color: var(--grau); text-shadow: 2px 2px 0 #2a2a2a; }
 .tt-hinweis { color: #aa00aa; font-style: italic; text-shadow: 2px 2px 0 #2a002a; }
 
 /* ---------- Knöpfe ---------- */
