@@ -3,7 +3,7 @@
 //   'voll'           Live-Demo läuft, Klick öffnet die Demo
 //   'eingeschraenkt' Demo nur eingeschränkt nutzbar, Klick öffnet GitHub
 //   'github'         keine Web-Demo (z. B. QGIS-Plugin), Klick öffnet GitHub
-//   'bald'           Platz ist reserviert, das Symbol hängt als Schatten ohne Link
+//   'bald'           Platz ist reserviert, das Symbol hängt ausgegraut ohne Link
 // Nicht dabei: ParaGecko und niedersachsen-cache (Datendienst).
 
 const ORG = 'https://github.com/Jade-HS-Vibecoding-WPK';
