@@ -54,10 +54,10 @@ export const PROJEKTE = Object.fromEntries([
     status: 'eingeschraenkt',
     hinweis: 'Die Demo spielt nur Beispielpläne ab, eigene Pläne prüft sie nicht.',
   }),
-  // Detailprüfer: Platz ist reserviert. Wenn die Demo online ist, status: 'voll' setzen und demo: null entfernen.
-  p('Detailpruefer', 'Detailprüfer', 'wandaufbau', 'Prüft Bauteilaufbauten von Wand, Dach und Boden: Schichten, Dämmung, U-Wert und Tauwasser.', {
-    status: 'bald',
+  p('Detailpruefer', 'Detailprüfer', 'wandaufbau', 'Claude-Skill: prüft Holzbau-Detailzeichnungen (PDF), markiert Befunde und erstellt einen Prüfbericht.', {
+    status: 'github',
     demo: null,
+    hinweis: 'Keine Live-Demo: herunterladen und zusammen mit Claude nutzen.',
   }),
   p('Workflow_App', 'Workflow App', 'klemmbrett', 'Tages-, Wochen- und Projektplanung mit Aufgaben und Zielen, auch fürs Handy.'),
 ].map((x) => [x.repo, x]));

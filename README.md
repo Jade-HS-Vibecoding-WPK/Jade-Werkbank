@@ -24,8 +24,7 @@ Der Stil ist an Minecraft angelehnt: Pixelschrift, Blöcke in der Inventaransich
 ## Was die Werkbank kann
 
 - **Werkbank und Kartentisch:** Auf den beiden sichtbaren Seiten jedes Blocks hängen die Werkzeuge an Nägeln, je Funktion eine Reihe mit Schild. Fährst du über ein Symbol, wird es größer, schwingt am Nagel, glänzt und zeigt einen Tooltip mit Funktion und Ziel des Klicks. Mit der Tastatur geht das per Tab, auf dem Handy zeigt das erste Tippen den Tooltip und das zweite öffnet.
-- **Klick:** Läuft die Live-Demo vollständig, öffnet der Klick die Demo. Ist sie nur eingeschränkt nutzbar, öffnet der Klick den Code auf GitHub, der Tooltip sagt warum. Das QGIS-Plugin führt ebenfalls zum Repo, weil seine Live-Demo den Ablauf nur in Screenshots zeigt.
-- **Reservierter Platz:** Der Detailprüfer hängt schon ausgegraut an der Werkbank, ohne Link. Sobald seine Demo online ist, wird er in `projekte.js` freigeschaltet.
+- **Klick:** Läuft die Live-Demo vollständig, öffnet der Klick die Demo. Ist sie nur eingeschränkt nutzbar, öffnet der Klick den Code auf GitHub, der Tooltip sagt warum. Das QGIS-Plugin führt ebenfalls zum Repo, weil seine Live-Demo den Ablauf nur in Screenshots zeigt. Der Detailprüfer ist ein Claude-Skill ohne Live-Demo, sein Symbol führt zum Repo mit Download und Anleitung.
 - **Ablage:** Dateien ablegen per Ziehen, Einfügen (Strg+V) oder „Datei ablegen“. Text in die Chatzeile tippen und Enter drücken legt eine Notiz ab, die Taste T springt in die Chatzeile. Zeilen lassen sich herunterladen, wegräumen oder aus dem Fenster ziehen. Die Dateien liegen im Browser (IndexedDB), es wird nichts hochgeladen. Auf einem anderen Gerät oder in einem anderen Browser ist die Ablage leer.
 
 ## Welches Werkzeug wo hängt
@@ -52,10 +51,10 @@ Die Zuordnung steht in `projekte.js`. Stand der Demos: 20.11.2026.
 | Werkbank | rechts | Material & Ökobilanz | CO-Emissionsrechner | Taschenrechner | GitHub (Demo rechnet mit Beispieldaten) |
 | Werkbank | rechts | Material & Ökobilanz | MaterialMatch | Materialmuster | Live-Demo |
 | Werkbank | rechts | Prüfen & Planen | plan-pruefer | Bauplan mit Haken | GitHub (Demo prüft nur Beispielpläne) |
-| Werkbank | rechts | Prüfen & Planen | Detailpruefer | Wandaufbau (ausgegraut) | noch nichts, Platz reserviert |
+| Werkbank | rechts | Prüfen & Planen | Detailpruefer | Wandaufbau | GitHub (Claude-Skill zum Herunterladen, keine Live-Demo) |
 | Werkbank | rechts | Prüfen & Planen | Workflow_App | Klemmbrett | Live-Demo |
 
-Nicht an der Werkbank: ParaGecko und niedersachsen-cache. Ein neues Projekt kommt dazu, indem du es in `PROJEKTE` einträgst und in `BLOECKE` einer Gruppe zuordnest. Der Eintrag `status` legt fest, wohin der Klick führt: `voll` (Live-Demo), `eingeschraenkt` und `github` (Repo auf GitHub) oder `bald` (ausgegraut, ohne Link). Den Detailprüfer schaltest du frei, indem du bei ihm `status: 'voll'` setzt und `demo: null` löschst. Ein neues Symbol zeichnest du als 16×16-Raster in `pixel.js`.
+Nicht an der Werkbank: ParaGecko und niedersachsen-cache. Ein neues Projekt kommt dazu, indem du es in `PROJEKTE` einträgst und in `BLOECKE` einer Gruppe zuordnest. Der Eintrag `status` legt fest, wohin der Klick führt: `voll` (Live-Demo), `eingeschraenkt` und `github` (Repo auf GitHub) oder `bald` (ausgegraut, ohne Link, für einen reservierten Platz). Ein neues Symbol zeichnest du als 16×16-Raster in `pixel.js`.
 
 ## Selbst starten
 
