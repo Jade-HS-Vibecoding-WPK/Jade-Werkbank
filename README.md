@@ -24,13 +24,13 @@ Der Stil ist an Minecraft angelehnt: Pixelschrift, Blöcke in der Inventaransich
 ## Was die Werkbank kann
 
 - **Werkbank und Kartentisch:** Auf den beiden sichtbaren Seiten jedes Blocks hängen die Werkzeuge an Nägeln, je Funktion eine Reihe mit Schild. Fährst du über ein Symbol, wird es größer, schwingt am Nagel, glänzt und zeigt einen Tooltip mit Funktion und Ziel des Klicks. Mit der Tastatur geht das per Tab, auf dem Handy zeigt das erste Tippen den Tooltip und das zweite öffnet.
-- **Klick:** Läuft die Live-Demo vollständig, öffnet der Klick die Demo. Ist sie nur eingeschränkt nutzbar, öffnet der Klick den Code auf GitHub, der Tooltip sagt warum. Das QGIS-Plugin hat keine Web-Demo und führt deshalb direkt zum Repo.
+- **Klick:** Läuft die Live-Demo vollständig, öffnet der Klick die Demo. Ist sie nur eingeschränkt nutzbar, öffnet der Klick den Code auf GitHub, der Tooltip sagt warum. Das QGIS-Plugin führt ebenfalls zum Repo, weil seine Live-Demo den Ablauf nur in Screenshots zeigt.
 - **Reservierter Platz:** Der Detailprüfer hängt schon ausgegraut an der Werkbank, ohne Link. Sobald seine Demo online ist, wird er in `projekte.js` freigeschaltet.
 - **Ablage:** Dateien ablegen per Ziehen, Einfügen (Strg+V) oder „Datei ablegen“. Text in die Chatzeile tippen und Enter drücken legt eine Notiz ab, die Taste T springt in die Chatzeile. Zeilen lassen sich herunterladen, wegräumen oder aus dem Fenster ziehen. Die Dateien liegen im Browser (IndexedDB), es wird nichts hochgeladen. Auf einem anderen Gerät oder in einem anderen Browser ist die Ablage leer.
 
 ## Welches Werkzeug wo hängt
 
-Die Zuordnung steht in `projekte.js`. Stand der Demos: 19.11.2026.
+Die Zuordnung steht in `projekte.js`. Stand der Demos: 20.11.2026.
 
 | Block | Seite | Gruppe | Projekt | Symbol | Klick öffnet |
 |---|---|---|---|---|---|
@@ -39,13 +39,13 @@ Die Zuordnung steht in `projekte.js`. Stand der Demos: 19.11.2026.
 | Kartentisch | links | Standortanalyse | locus | Stecknadel | Live-Demo |
 | Kartentisch | links | Standortanalyse | urban-analyst | Fernrohr | Live-Demo |
 | Kartentisch | links | Standortanalyse | 15-min-stadt-scanner | Stoppuhr | Live-Demo |
-| Kartentisch | links | Standortanalyse | urban-analysis-plugin | Puzzleteil mit Karte | GitHub (QGIS-Plugin, keine Web-Demo) |
+| Kartentisch | links | Standortanalyse | urban-analysis-plugin | Puzzleteil mit Karte | GitHub (QGIS-Plugin, Demo nur in Screenshots) |
 | Kartentisch | rechts | Risiko | TERRA-Sim | Unwetter | GitHub (Demo zeigt nur ein Beispielgebiet) |
 | Kartentisch | rechts | Immobilie | ImmoCheck | Haus mit Münze | Live-Demo |
 | Werkbank | links | Modellbau | gebaeudehoehentool-umgebungsmodell | Häuser mit Höhenmaß | Live-Demo |
 | Werkbank | links | Modellbau | Map2Model | Karte mit Modell | Live-Demo |
 | Werkbank | links | Modellbau | laserdatei-aus-3D | Laserkopf | Live-Demo |
-| Werkbank | links | Modellbau | Modellbau-Laserdatei-Gebaeude | Zuschnitt einer Hausansicht | Live-Demo |
+| Werkbank | links | Modellbau | hb-laserplus (früher Modellbau-Laserdatei-Gebaeude) | Zuschnitt einer Hausansicht | Live-Demo |
 | Werkbank | links | Entwurf | fassaden-tool | Fassade aus Ziegel und Holz | Live-Demo |
 | Werkbank | links | Entwurf | treppenplaner | Treppe | Live-Demo |
 | Werkbank | rechts | Material & Ökobilanz | Energieeffizienz-Oekobilanz-Optimierung | Effizienzbalken | Live-Demo |

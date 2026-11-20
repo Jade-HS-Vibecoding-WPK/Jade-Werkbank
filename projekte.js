@@ -2,7 +2,7 @@
 // status bestimmt, wohin der Klick führt:
 //   'voll'           Live-Demo läuft, Klick öffnet die Demo
 //   'eingeschraenkt' Demo nur eingeschränkt nutzbar, Klick öffnet GitHub
-//   'github'         keine Web-Demo (z. B. QGIS-Plugin), Klick öffnet GitHub
+//   'github'         keine Web-Demo, Klick öffnet GitHub
 //   'bald'           Platz ist reserviert, das Symbol hängt ausgegraut ohne Link
 // Nicht dabei: ParaGecko und niedersachsen-cache (Datendienst).
 
@@ -28,9 +28,8 @@ export const PROJEKTE = Object.fromEntries([
   p('urban-analyst', 'Urban Analyst', 'fernrohr', 'Städtebauliche Analysepläne aus OpenStreetMap, direkt im Browser.'),
   p('15-min-stadt-scanner', '15-Minuten-Stadt', 'uhr', 'Klick auf die Karte zeigt, was zu Fuß in 5 und 10 Minuten erreichbar ist.'),
   p('urban-analysis-plugin', 'Urban Analysis Plugin', 'puzzle', 'QGIS-Plugin: sammelt Daten, führt sie zusammen, bereinigt Dopplungen und liefert erste Analysen.', {
-    status: 'github',
-    demo: null,
-    hinweis: 'Läuft in QGIS, nicht im Browser.',
+    status: 'eingeschraenkt',
+    hinweis: 'Die Live-Demo zeigt den Ablauf nur in Screenshots, das Plugin selbst läuft in QGIS.',
   }),
   p('TERRA-Sim', 'TERRA Sim', 'sturm', '3D-Stadtmodell mit Simulation von Hochwasser, Starkregen und Sturm.', {
     status: 'eingeschraenkt',
@@ -41,7 +40,8 @@ export const PROJEKTE = Object.fromEntries([
   p('gebaeudehoehentool-umgebungsmodell', 'Gebäudehöhen', 'hoehen', 'Höhen und Geschosse der Gebäude eines Gebiets fürs Umgebungsmodell.'),
   p('Map2Model', 'Map2Model', 'karte3d', 'Aus der Karte ein 3D-Modell und Laserdateien fürs Städtebaumodell.'),
   p('laserdatei-aus-3D', 'Laserdatei aus 3D', 'laser', 'Macht aus einem 3D-Modell eine Laserdatei für den Modellbau.'),
-  p('Modellbau-Laserdatei-Gebaeude', 'Modellbau-Laserdatei', 'zuschnitt', 'Aus einer IFC-Datei eine DXF-Laserdatei mit Fenstern und Türen.'),
+  // früher Modellbau-Laserdatei-Gebaeude, am 19.11.2026 umbenannt
+  p('hb-laserplus', 'hb-laserplus', 'zuschnitt', 'Aus einer IFC-Datei eine Laserdatei (DXF) fürs Pappmodell mit Fenstern und Türen oder eine 3D-Druck-Datei (STL).'),
   p('fassaden-tool', 'Fassaden-Tool', 'fassade', 'Fassadenmaterialien und Öffnungen am Modell ausprobieren und vergleichen.'),
   p('treppenplaner', 'Treppenplaner', 'treppe', 'Treppen nach DIN 18065 berechnen und auswählen.'),
   p('Energieeffizienz-Oekobilanz-Optimierung', 'Energie & Ökobilanz', 'energie', 'Analysiert ein Projekt und schlägt Bauweise und Material für eine bessere Bilanz vor.'),
@@ -84,7 +84,7 @@ export const BLOECKE = [
     info: 'Modell, Entwurf und Material',
     seiten: {
       links: [
-        { titel: 'Modellbau', projekte: ['gebaeudehoehentool-umgebungsmodell', 'Map2Model', 'laserdatei-aus-3D', 'Modellbau-Laserdatei-Gebaeude'] },
+        { titel: 'Modellbau', projekte: ['gebaeudehoehentool-umgebungsmodell', 'Map2Model', 'laserdatei-aus-3D', 'hb-laserplus'] },
         { titel: 'Entwurf', projekte: ['fassaden-tool', 'treppenplaner'] },
       ],
       rechts: [
